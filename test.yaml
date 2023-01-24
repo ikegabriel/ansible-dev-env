@@ -1,0 +1,32 @@
+---
+ - name: Ansible apt module examples
+   hosts: localhost
+   become: true
+   tasks: 
+    - name: Ansible Update Cache and Upgrade all Packages
+      register: updatesys
+      apt:
+        name: python=3.8
+        state: present
+        # update_cache: yes
+
+    - name: Display the last line of the previous task to check the stats
+      debug:
+        msg:  "{{updatesys.stdout_lines|last}}"
+
+    - name: Change Directory
+      shell: ls
+      args:
+          chdir:{{ directory }}
+        # chdir:{ /home/specialist/Desktop}
+      register: lsresult
+    
+
+    - name: Ls Result
+      debug:
+        msg: "ls {{ lsresult.stdout }}"
+
+    # - name: Log ls
+    #   shell: ls > catturd2.txt
+    #   args:
+    #     chdir: /home/specialist/Desktop

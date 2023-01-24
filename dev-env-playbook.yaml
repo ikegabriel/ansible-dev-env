@@ -1,0 +1,43 @@
+
+---
+
+- hosts: localhost
+  vars:
+    pythonVersion: python3.8
+
+  tasks:
+
+# Update and upgrade apt Packages
+  - name: Update apt
+    become: true
+    apt:
+      upgade: yes
+      update_cache: yes
+      cache_valid_time: 86400
+  
+# Check and install python
+  - name: Check for Python
+    raw: python3 --version
+    changed_when: false
+    failed_when: false
+    register: check_python
+
+  - name: Install Python
+    apt:
+      name: "{{ pythonVersion }}"
+      state: present
+    when: check_python.rc != 0
+
+# Check and install docker
+  - name: Check for Docker
+    raw: docker --version
+    changed_when: false
+    failed_when: false
+    register: check_docker
+
+  - name: Install Docker
+    apt:
+      name: docker
+      state: present
+    when: check_docker.rc != 0
+  
